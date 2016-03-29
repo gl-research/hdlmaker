@@ -1,0 +1,35 @@
+{
+  "name": "hdlmaker",
+  "author": "Javier D Garcia-Lasheras",
+  "version": "0.0.1",
+  "description": "A web based commander for the HDL Make tool",
+  "keywords": [
+    "hdlmaker",
+    "hdlmake",
+    "hdl make",
+    "hdl"
+  ],
+  "bin": {
+    "hdlmaker": "./index.js"
+  },
+  "homepage": "https://github.com/gl-research/hdlmaker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gl-research/hdlmaker.git"
+  },
+  "dependencies": {
+    "socket.io": "~1.4.3",
+    "express": "~4.4",
+    "lodash" : "~2.4",
+    "ansi2html-extended" : "~0.0.4",
+    "commander" : "~2.3"
+  },
+  "devDependencies": {
+    "mocha": "1.20.1"
+  },
+  "main": "hdlmaker",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "license": "GPLv3"
+}

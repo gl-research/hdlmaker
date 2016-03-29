@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Browser</title>
+<link rel="stylesheet" href="/lib/bootstrap.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/app.css">
+
+<style type="text/css">
+  
+	.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      background-color:#EEE;
+  }
+   
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+   
+  .node text {
+    font-size:10px; 
+    font-family:sans-serif;
+  }
+   
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+
+  .templink {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
+
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+
+<body>
+
+    <script>    
+      var socket = io.connect();
+      
+      socket.on('date', function(data){
+        $('#date').text(data.date);
+      });
+
+      socket.on('hdlmake', function(data){
+        //document.getElementById("pageContent").innerHTML = data.hdlmake;
+        var objDiv = document.getElementById("console");
+        objDiv.innerHTML = data.hdlmake;
+        objDiv.scrollTop = objDiv.scrollHeight;
+      });
+
+      socket.on('outcome', function(data){
+        $('#outcome').text(data.outcome);
+        enableControls();
+        if (issuedCommand == 'tree') {
+            document.getElementById("tree-container").innerHTML = '';
+            function reload_js(src) {
+                $('script[src="' + src + '"]').remove();
+                $('<script>').attr('src', src).appendTo('head');
+            }
+            reload_js('dndTree.js');
+        }
+        issuedCommand = '';
+      });
+
+    </script>
+    <div id="date"></div>
+    <div id="outcome"></div>
+
+   <div class="panel panel-default mainpanel">
+           <div class="panel-heading">
+                   File Browser
+                   <span class="up">
+                    <i class="fa fa-level-up"></i> Up
+                   </span>
+           </div>
+      <div class="panel-body">
+              <table class="linksholder">
+              </table>
+      </div>
+
+  </div>
+
+
+<div data-role="tabs" id="tabs">
+  <div data-role="navbar">
+    <ul>
+      <li><a href="#hdlmake" data-ajax="false">hdlmake</a></li>
+      <li><a href="#make" data-ajax="false">make</a></li>
+      <li><a href="#git" data-ajax="false">git</a></li>
+    </ul>
+  </div>
+
+
+  <div id="hdlmake" class="ui-body-d ui-content">
+
+    <p>This is the HDLMake menu:</p>
+    <a id="auto" class="ui-btn ui-btn-inline">auto</a>
+    <a id="fetch" class="ui-btn ui-btn-inline">fetch</a>
+    <a id="clean" class="ui-btn ui-btn-inline">clean</a>
+    <a id="tree" class="ui-btn ui-btn-inline">tree</a>
+
+  </div>
+
+  <div id="make" class="ui-body-d ui-content">
+
+    <p>This is the Make menu:</p>
+    <a id="local" class="ui-btn ui-btn-inline">local</a>
+    <a id="remote" class="ui-btn ui-btn-inline">remote</a>
+    <a id="cleanmake" class="ui-btn ui-btn-inline">clean</a>
+
+  </div>
+</div>
+
+
+
+    <script>
+
+    function disableControls() {
+        $('#auto').addClass('ui-disabled');
+        $('#fetch').addClass('ui-disabled');
+        $('#clean').addClass('ui-disabled');
+        $('#tree').addClass('ui-disabled');
+        $('#local').addClass('ui-disabled');
+        $('#remote').addClass('ui-disabled');
+        $('#cleanmake').addClass('ui-disabled');
+    }
+
+
+    function enableControls() {
+        $('#auto').removeClass('ui-disabled');
+        $('#fetch').removeClass('ui-disabled');
+        $('#clean').removeClass('ui-disabled');
+        $('#tree').removeClass('ui-disabled');
+        $('#local').removeClass('ui-disabled');
+        $('#remote').removeClass('ui-disabled');
+        $('#cleanmake').removeClass('ui-disabled');
+    }
+
+    var issuedCommand = '';
+
+    $(document).on('click', '#auto', function(e){
+        //console.log('firing');
+        issuedCommand = 'auto';
+        disableControls();
+        socket.emit('client_data', {'letter': 'auto'});
+    });
+    $(document).on('click', '#fetch', function(e){
+        //console.log('firing');
+        issuedCommand = 'fetch';
+        disableControls();
+        socket.emit('client_data', {'letter': 'fetch'});
+    });1
+    $(document).on('click', '#clean', function(e){
+        //console.log('firing');
+        issuedCommand = 'clean';
+        disableControls();
+        socket.emit('client_data', {'letter': 'clean'});
+    });
+    $(document).on('click', '#tree', function(e){
+        //console.log('firing');
+        issuedCommand = 'tree';
+        disableControls();
+        socket.emit('client_data', {'letter': 'tree'});
+    });
+    $(document).on('click', '#local', function(e){
+        //console.log('firing');
+        issuedCommand = 'local';
+        disableControls();
+        socket.emit('client_data', {'letter': 'local'});
+    });
+    $(document).on('click', '#remote', function(e){
+        //console.log('firing');
+        issuedCommand = 'remote';
+        disableControls();
+        socket.emit('client_data', {'letter': 'remote'});
+    });
+    $(document).on('click', '#cleanmake', function(e){
+        //console.log('firing');
+        issuedCommand = 'cleanmake';
+        disableControls();
+        socket.emit('client_data', {'letter': 'cleanmake'});
+    });
+    </script>
+
+
+    <div id="console" style="overflow:scroll; height:400px; position:bottom; background-color:#000;"></div>
+
+    <div id="tree-container"></div>
+
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/bootstrap.min.js"></script>
+    <script src="/lib/datatable/js/jquery.datatables.min.js"></script>
+    <script src="/lib/app.js"></script>
+
+
+</body>
+</html>
+
