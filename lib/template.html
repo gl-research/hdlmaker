@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
+<head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>File Browser</title>
+<title>hdlmaker: a web commander for hdlmake</title>
 <link rel="stylesheet" href="/lib/bootstrap.min.css">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="/lib/app.css">
@@ -54,9 +55,10 @@
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="dndTree.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
-
+</head>
 
 <body>
 
@@ -65,6 +67,10 @@
       
       socket.on('date', function(data){
         $('#date').text(data.date);
+      });
+
+      socket.on('target', function(data){
+        $('#target').text(data.target);
       });
 
       socket.on('hdlmake', function(data){
@@ -89,12 +95,16 @@
       });
 
     </script>
+
+       <div data-role="title">
+        <h1>Web commander for hdlmake</h1>
+      </div>
+
     <div id="date"></div>
-    <div id="outcome"></div>
 
    <div class="panel panel-default mainpanel">
            <div class="panel-heading">
-                   File Browser
+                   Target Directory Selection
                    <span class="up">
                     <i class="fa fa-level-up"></i> Up
                    </span>
@@ -107,6 +117,13 @@
   </div>
 
 
+
+   <div class="panel panel-default mainpanel">
+           <div class="panel-heading">
+                   Control Dashboard
+           </div>
+      <div class="panel-body">
+
 <div data-role="tabs" id="tabs">
   <div data-role="navbar">
     <ul>
@@ -115,7 +132,6 @@
       <li><a href="#git" data-ajax="false">git</a></li>
     </ul>
   </div>
-
 
   <div id="hdlmake" class="ui-body-d ui-content">
 
@@ -135,9 +151,22 @@
     <a id="cleanmake" class="ui-btn ui-btn-inline">clean</a>
 
   </div>
+
+  <div id="git" class="ui-body-d ui-content">
+
+    <p>This is the Git menu (just to get new projects):</p>
+    <a id="clone" class="ui-btn ui-btn-inline">clone</a>
+    <a id="checkout" class="ui-btn ui-btn-inline">checkout</a>
+    <a id="log" class="ui-btn ui-btn-inline">checkout</a>
+
+  </div>
+
+      </div>
+
+  </div>
+
+
 </div>
-
-
 
     <script>
 
@@ -209,9 +238,26 @@
     </script>
 
 
-    <div id="console" style="overflow:scroll; height:400px; position:bottom; background-color:#000;"></div>
+   <div class="panel panel-default mainpanel">
+           <div class="panel-heading">
+                   Log Console
+           </div>
+      <div class="panel-body">
+         <div id="console" style="overflow:scroll; height:400px; position:bottom; background-color:#000;"></div>
+      </div>
 
-    <div id="tree-container"></div>
+  </div>
+
+   <div class="panel panel-default mainpanel">
+           <div class="panel-heading">
+                   Module Hierarchy
+           </div>
+      <div id="hierarchy" class="panel-body">
+          <div id="tree-container"></div>
+      </div>
+
+  </div>
+
 
     <script src="/lib/jquery.min.js"></script>
     <script src="/lib/bootstrap.min.js"></script>
